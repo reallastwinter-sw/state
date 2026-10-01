@@ -60,7 +60,7 @@ iframe{width:100%;height:55vh;border:0;background:#fff;display:none}
       <div class="tabs"><h2 style="padding:8px 12px">필드 설명</h2></div>
     </div>
     <div class="rows" id="rows"></div>
-    <p class="hint">설명 칸을 눌러 바로 수정할 수 있어요. 각 줄의 복사 버튼은 {{필드명}}: 설명 형태로 복사해요. (이 화면에서 고친 내용은 저장되지 않아요.)</p>
+    <p class="hint">설명 칸을 눌러 바로 수정할 수 있어요. 각 줄의 복사 버튼은 설명 내용만 복사해요. (이 화면에서 고친 내용은 저장되지 않아요.)</p>
   </div>
 </main>
 
@@ -128,7 +128,7 @@ NAMES.forEach(function(n, idx){
   inputs.push(inp);
   wire(b, function(){ return lineOf(n, inp); });
 });
-function lineOf(n, inp){ return ('{{' + n + '}}: ' + inp.value).replace(/\s+$/, ''); }
+function lineOf(n, inp){ return inp.value.trim(); }
 
 code.textContent = src;
 prev.srcdoc = '<body style="margin:12px;background:#fff">' + src + '</body>';
