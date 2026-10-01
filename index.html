@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>상태창 HTML 복사</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f7f9;--card:#fff;--text:#1c1f24;--muted:#6b7280;--accent:#8c2a33;--border:#e2e5ea;--code:#f1f3f6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161a;--card:#1d2026;--text:#eceef1;--muted:#9aa1ad;--accent:#c4545e;--border:#2d323b;--code:#12141a}}
+:root[data-theme="dark"]{--bg:#14161a;--card:#1d2026;--text:#eceef1;--muted:#9aa1ad;--accent:#c4545e;--border:#2d323b;--code:#12141a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.5}
+main{max-width:860px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px}
+h2{font-size:1.05rem;margin:0}
+p.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.bar{display:flex;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tabs{display:flex;gap:4px;flex:1;align-items:center}
+.tab{border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:8px;font:inherit;cursor:pointer}
+.tab.on{background:var(--code);color:var(--text);font-weight:600}
+.copy{border:0;background:var(--accent);color:#fff;padding:10px 18px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.copy.done{background:#16a34a}
+pre,textarea{margin:0;padding:16px;background:var(--code);color:var(--text);font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans KR",monospace}
+pre{overflow:auto;max-height:55vh;white-space:pre}
+textarea{display:block;width:100%;height:340px;border:0;resize:vertical;outline:0}
+iframe{width:100%;height:55vh;border:0;background:#fff;display:none}
+.hint{color:var(--muted);font-size:.85rem;margin:0;padding:10px 16px;border-top:1px solid var(--border)}
+.rows{padding:8px 12px}
+.row{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.name{flex:0 0 108px;font:600 13px ui-monospace,Menlo,Consolas,"Noto Sans KR",monospace;color:var(--accent);word-break:break-all}
+.desc{flex:1;min-width:0;border:1px solid var(--border);border-radius:8px;padding:9px 10px;background:var(--code);color:var(--text);font:inherit;font-size:14px;outline:0}
+.desc:focus{border-color:var(--accent)}
+.copy.sm{padding:8px 12px;font-size:13px;white-space:nowrap}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+<main>
+  <h1>상태창 HTML 복사</h1>
+  <p class="sub">버튼을 누르면 내용이 통째로 복사돼요.<br>HTML을 복사해서 넣은 뒤 '모두 필드로 추가' 버튼을 눌러주세요. 이후 필드 설명을 복사해서 넣어주시면 됩니다.</p>
+
+  <div class="card">
+    <div class="bar">
+      <div class="tabs">
+        <button class="tab on" id="t-code">코드</button>
+        <button class="tab" id="t-prev">미리보기</button>
+      </div>
+      <button class="copy" id="copy1">HTML 복사</button>
+    </div>
+    <pre id="code"></pre>
+    <iframe id="prev" sandbox=""></iframe>
+  </div>
+
+  <div class="card">
+    <div class="bar">
+      <div class="tabs"><h2 style="padding:8px 12px">필드 설명</h2></div>
+    </div>
+    <div class="rows" id="rows"></div>
+    <p class="hint">설명 칸을 눌러 바로 수정할 수 있어요. 각 줄의 복사 버튼은 {{필드명}}: 설명 형태로 복사해요. (이 화면에서 고친 내용은 저장되지 않아요.)</p>
+  </div>
+</main>
+
+<textarea id="src" hidden>&lt;div style="max-width:520px;margin:12px 0;color:#cfcfcf;background:#1c1c1c;border:1px solid #393939;border-left:4px solid #8c2a33;border-radius:4px;font-size:13px;line-height:1.6;"&gt;
+
+&lt;div style="padding:12px 14px;font-family:'Noto Serif KR','Nanum Myeongjo',serif;font-size:13px;letter-spacing:0.02em;"&gt;
+{{시간대}} &lt;span style="color:#5a5a5a;"&gt;&amp;nbsp;|&amp;nbsp;&lt;/span&gt; {{날씨}} &lt;span style="color:#5a5a5a;"&gt;&amp;nbsp;|&amp;nbsp;&lt;/span&gt; {{계절}} &lt;span style="color:#5a5a5a;"&gt;&amp;nbsp;|&amp;nbsp;&lt;/span&gt; {{장소}}
+&lt;/div&gt;
+
+&lt;details style="border-top:1px solid #393939;"&gt;
+&lt;summary style="cursor:pointer;padding:9px 14px;font-size:13px;color:#9b9b9b;"&gt;상세 정보&lt;/summary&gt;
+
+&lt;div style="padding:4px 14px 14px;"&gt;
+
+&lt;section style="margin-bottom:14px;"&gt;
+&lt;p style="margin:0 0 6px;"&gt;&lt;b style="font-family:'Noto Serif KR','Nanum Myeongjo',serif;font-size:13px;color:#b8935a;"&gt;현재 상황&lt;/b&gt;&amp;nbsp;&amp;nbsp;{{현재상황}}&lt;/p&gt;
+&lt;p style="margin:0;"&gt;&lt;b style="font-family:'Noto Serif KR','Nanum Myeongjo',serif;font-size:13px;color:#b8935a;"&gt;일정&lt;/b&gt;&amp;nbsp;&amp;nbsp;{{일정}}&lt;/p&gt;
+&lt;/section&gt;
+
+&lt;section style="margin-bottom:14px;"&gt;
+&lt;h4 style="margin:0 0 6px;font-family:'Noto Serif KR','Nanum Myeongjo',serif;font-size:13px;color:#b8935a;"&gt;복장&lt;/h4&gt;
+&lt;div style="display:flex;flex-wrap:wrap;gap:8px;"&gt;
+&lt;div style="flex:1 1 200px;padding:9px 11px;border-radius:3px;background:#282828;"&gt;&lt;b style="color:#8fa3b8;"&gt;{{char}}&lt;/b&gt;&lt;br&gt;{{캐릭터복장}}&lt;/div&gt;
+&lt;div style="flex:1 1 200px;padding:9px 11px;border-radius:3px;background:#282828;"&gt;&lt;b style="color:#8fa3b8;"&gt;{{user}}&lt;/b&gt;&lt;br&gt;{{유저복장}}&lt;/div&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+
+&lt;section style="margin-bottom:14px;"&gt;
+&lt;h4 style="margin:0 0 6px;font-family:'Noto Serif KR','Nanum Myeongjo',serif;font-size:13px;color:#b8935a;"&gt;상태 및 자세&lt;/h4&gt;
+&lt;div style="display:flex;flex-wrap:wrap;gap:8px;"&gt;
+&lt;div style="flex:1 1 200px;padding:9px 11px;border-radius:3px;background:#282828;"&gt;&lt;b style="color:#8fa3b8;"&gt;{{char}}&lt;/b&gt;&lt;br&gt;{{캐릭터자세}}&lt;/div&gt;
+&lt;div style="flex:1 1 200px;padding:9px 11px;border-radius:3px;background:#282828;"&gt;&lt;b style="color:#8fa3b8;"&gt;{{user}}&lt;/b&gt;&lt;br&gt;{{유저자세}}&lt;/div&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+
+&lt;section&gt;
+&lt;h4 style="margin:0 0 6px;font-family:'Noto Serif KR','Nanum Myeongjo',serif;font-size:13px;color:#b8935a;"&gt;귀영 커뮤니티&lt;/h4&gt;
+&lt;div style="padding:10px 12px;border-radius:3px;background:#282828;"&gt;
+&lt;p style="margin:0;"&gt;&lt;b&gt;{{게시글제목}}&lt;/b&gt;&lt;/p&gt;
+&lt;p style="margin:0 0 6px;font-size:13px;color:#bdbdbd;"&gt;{{게시글내용}}&lt;/p&gt;
+&lt;div style="margin-top:4px;padding-left:10px;border-left:2px solid #8c2a33;font-size:13px;"&gt;{{댓글1}}&lt;/div&gt;
+&lt;div style="margin-top:4px;padding-left:10px;border-left:2px solid #8c2a33;font-size:13px;"&gt;{{댓글2}}&lt;/div&gt;
+&lt;div style="margin-top:4px;padding-left:10px;border-left:2px solid #8c2a33;font-size:13px;"&gt;{{댓글3}}&lt;/div&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+
+&lt;/div&gt;
+&lt;/details&gt;
+&lt;/div&gt;</textarea>
+
+<script>
+var src = document.getElementById('src').value;
+var code = document.getElementById('code');
+var prev = document.getElementById('prev');
+var NAMES = ['시간대','날씨','계절','장소','현재상황','일정','캐릭터복장','유저복장','캐릭터자세','유저자세','게시글제목','게시글내용','댓글1','댓글2','댓글3'];
+var DESCS = ["현재 시간대를 한 단어로 표기. (새벽, 아침, 오전, 오후, 해질녘, 저녁, 밤 등)", "현재 날씨를 한 단어로 표기. (맑음, 구름, 비, 눈, 비바람 등)", "현재 계절을 한 단어로 표기. (한여름, 늦가을 등)", "현재 장소를 표기.", "지금 벌어지고 있는 상황을 한 문장으로 요약.", "{{char}}의 가장 가까운 일정.", "{{char}}의 현재 복장. 30자 이내.", "{{user}}의 현재 복장. 30자 이내.", "{{char}}의 현재 상태 및 자세.", "{{user}}의 현재 상태 및 자세.", "조직의 비공식 커뮤니티에 올라온 짧은 게시글 제목. 현재 사건과 관련된 소문 느낌.", "게시글 제목에 이어지는 본문. 소문이나 목격담 투로 50자 이내.", "게시글에 달린 댓글. '닉네임: 내용' 형식, 30자 이내.", "게시글에 달린 댓글. '닉네임: 내용' 형식, 30자 이내.", "게시글에 달린 댓글. '닉네임: 내용' 형식, 30자 이내."];
+var rows = document.getElementById('rows');
+var inputs = [];
+NAMES.forEach(function(n, idx){
+  var row = document.createElement('div'); row.className = 'row';
+  var nm = document.createElement('div'); nm.className = 'name'; nm.textContent = '{{' + n + '}}';
+  var inp = document.createElement('input'); inp.className = 'desc'; inp.type = 'text'; inp.placeholder = '설명'; inp.value = DESCS[idx] || '';
+  var b = document.createElement('button'); b.className = 'copy sm'; b.textContent = '복사';
+  row.appendChild(nm); row.appendChild(inp); row.appendChild(b); rows.appendChild(row);
+  inputs.push(inp);
+  wire(b, function(){ return lineOf(n, inp); });
+});
+function lineOf(n, inp){ return ('{{' + n + '}}: ' + inp.value).replace(/\s+$/, ''); }
+
+code.textContent = src;
+prev.srcdoc = '<body style="margin:12px;background:#fff">' + src + '</body>';
+
+function show(w){
+  var c = w === 'code';
+  code.style.display = c ? 'block' : 'none';
+  prev.style.display = c ? 'none' : 'block';
+  document.getElementById('t-code').classList.toggle('on', c);
+  document.getElementById('t-prev').classList.toggle('on', !c);
+}
+document.getElementById('t-code').onclick = function(){ show('code'); };
+document.getElementById('t-prev').onclick = function(){ show('prev'); };
+
+function fallbackCopy(text){
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
+  return ok;
+}
+function wire(btn, getText){
+  var label = btn.textContent;
+  function done(ok){
+    btn.textContent = ok ? '복사 완료 ✓' : '복사 실패';
+    btn.classList.toggle('done', ok);
+    setTimeout(function(){ btn.textContent = label; btn.classList.remove('done'); }, 2000);
+  }
+  btn.onclick = function(){
+    var t = getText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function(){ done(true); }, function(){ done(fallbackCopy(t)); });
+    } else { done(fallbackCopy(t)); }
+  };
+}
+wire(document.getElementById('copy1'), function(){ return src; });
+code.onclick = function(){
+  var r = document.createRange(); r.selectNodeContents(code);
+  var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+};
+</script>
+</body>
+</html>
